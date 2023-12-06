@@ -1,24 +1,31 @@
 package com.felipesouza.domain;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
-@AllArgsConstructor
+@Setter
+@AllArgsConstructor()
 public class Anime {
 
     private Long id;
+
+    @JsonProperty(value = "name")
     private String name;
 
-    public static List<Anime> getAnimes() {
-        return List.of(
-                new Anime(1L, "Naruto"),
-                new Anime(2L, "Death Note"),
-                new Anime(3L, "Boruto"),
-                new Anime(4L, "Dragonball Z")
-        );
+    @Getter
+    private static List<Anime> animes = new ArrayList<>();
+
+    static {
+        var jigokuraku = new Anime(1L, "Jigokuraku");
+        var konosuba = new Anime(2L, "Konosuba");
+        var drStone = new Anime(1L, "Dr.Stone");
+        animes.addAll(List.of(jigokuraku, konosuba, drStone));
     }
 
 }
