@@ -14,7 +14,6 @@ import java.util.List;
 public class Anime {
 
     private Long id;
-
     @JsonProperty(value = "name")
     private String name;
 
