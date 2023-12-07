@@ -1,16 +1,15 @@
 package com.felipesouza.domain;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Getter
 @Setter
-@AllArgsConstructor()
+@AllArgsConstructor
+@ToString
 public class Anime {
 
     private Long id;
