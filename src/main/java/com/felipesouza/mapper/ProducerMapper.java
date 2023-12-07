@@ -2,10 +2,13 @@ package com.felipesouza.mapper;
 
 import com.felipesouza.domain.Producer;
 import com.felipesouza.request.ProducerPostRequest;
+import com.felipesouza.response.ProducerGetResponse;
 import com.felipesouza.response.ProducerPostResponse;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
+
+import java.util.List;
 
 @Mapper
 public interface ProducerMapper {
@@ -16,4 +19,6 @@ public interface ProducerMapper {
     Producer toProducer(ProducerPostRequest request);
 
     ProducerPostResponse toProducerPostResponse(Producer producer);
+
+    List<ProducerGetResponse> toProducerGetResponses(List<Producer> producers);
 }
