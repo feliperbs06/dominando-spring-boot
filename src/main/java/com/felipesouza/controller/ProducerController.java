@@ -7,6 +7,7 @@ import com.felipesouza.request.ProducerPutRequest;
 import com.felipesouza.response.ProducerGetResponse;
 import com.felipesouza.response.ProducerPostResponse;
 import com.felipesouza.service.ProducerService;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -18,13 +19,10 @@ import java.util.List;
 @RestController
 @RequestMapping(path = {"v1/producers", "v1/producers/"})
 @Log4j2
+@RequiredArgsConstructor
 public class ProducerController {
     private static final ProducerMapper MAPPER = ProducerMapper.INSTANCE;
-    private ProducerService producerService;
-
-    public ProducerController() {
-        this.producerService = new ProducerService();
-    }
+    private final ProducerService producerService;
 
     @GetMapping
     public ResponseEntity<List<ProducerGetResponse>> list(@RequestParam(required = false) String name) {
