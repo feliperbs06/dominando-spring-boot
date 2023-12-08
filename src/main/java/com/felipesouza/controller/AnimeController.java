@@ -1,16 +1,15 @@
 package com.felipesouza.controller;
 
-import com.felipesouza.domain.Anime;
 import com.felipesouza.mapper.AnimeMapper;
 import com.felipesouza.request.AnimePostRequest;
 import com.felipesouza.request.AnimePutRequest;
 import com.felipesouza.response.AnimeGetResponse;
 import com.felipesouza.response.AnimePostResponse;
+import com.felipesouza.service.AnimeService;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -19,47 +18,41 @@ import java.util.List;
 @Log4j2
 public class AnimeController {
     private static final AnimeMapper MAPPER = AnimeMapper.INSTANCE;
+    private AnimeService animeService;
+
+    public AnimeController() {
+        this.animeService = new AnimeService();
+    }
 
     @GetMapping
     public ResponseEntity<List<AnimeGetResponse>> list(@RequestParam(required = false) String name) {
-        var animes = Anime.getAnimes();
+        var animes = animeService.findAll(name);
         var response = MAPPER.toAnimeGetResponses(animes);
-        if (name == null) return ResponseEntity.ok(response);
-        response = response.stream().filter(anime -> anime.getName().equalsIgnoreCase(name)).toList();
         return ResponseEntity.ok(response);
     }
 
     @GetMapping("{id}")
     public ResponseEntity<AnimeGetResponse> filterById(@PathVariable Long id) {
         log.info("Request received find anime by id '{}'", id);
-        var anime = Anime.getAnimes().stream()
-                .filter(a -> a.getId().equals(id))
-                .findFirst()
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Anime not found to be deleted"));
+        var anime = animeService.findById(id);
         var response = MAPPER.toGetResponse(anime);
         return ResponseEntity.ok(response);
-
     }
 
     @PostMapping
     public ResponseEntity<AnimePostResponse> saveAnime(@RequestBody AnimePostRequest request) {
         log.info("Request received save anime'{}'", request);
         var anime = MAPPER.toAnime(request);
+        anime = animeService.save(anime);
         var response = MAPPER.toAnimePostResponse(anime);
 
-        Anime.getAnimes().add(anime);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @DeleteMapping("{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         log.info("Request received to delete the anime by id '{}'", id);
-        var anime = Anime.getAnimes()
-                .stream()
-                .filter(a -> a.getId().equals(id))
-                .findFirst()
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Anime not found to be deleted"));
-        Anime.getAnimes().remove(anime);
+        animeService.delete(id);
         return ResponseEntity.noContent().build();
 
     }
@@ -67,15 +60,8 @@ public class AnimeController {
     @PutMapping
     public ResponseEntity<Void> update(@RequestBody AnimePutRequest request) {
         log.info("Request received to update the anime '{}'", request);
-        var anime = Anime.getAnimes()
-                .stream()
-                .filter(a -> a.getId().equals(request.getId()))
-                .findFirst()
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Anime not found to be updated"));
-        var animeUpdated = MAPPER.toAnime(request);
-        Anime.getAnimes().remove(anime);
-        Anime.getAnimes().add(animeUpdated);
+        var animeToUpdate = MAPPER.toAnime(request);
+        animeService.update(animeToUpdate);
         return ResponseEntity.noContent().build();
-
     }
 }
