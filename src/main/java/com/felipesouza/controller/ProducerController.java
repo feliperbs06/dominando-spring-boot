@@ -4,6 +4,7 @@ package com.felipesouza.controller;
 import com.felipesouza.mapper.ProducerMapper;
 import com.felipesouza.domain.Producer;
 import com.felipesouza.request.ProducerPostRequest;
+import com.felipesouza.request.ProducerPutRequest;
 import com.felipesouza.response.ProducerGetResponse;
 import com.felipesouza.response.ProducerPostResponse;
 import lombok.extern.log4j.Log4j2;
@@ -51,7 +52,19 @@ public class ProducerController {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Producer not found to be deleted"));
         Producer.getProducers().remove(producer);
         return ResponseEntity.noContent().build();
-
     }
 
+    @PutMapping
+    public ResponseEntity<Void> update(@RequestBody ProducerPutRequest request) {
+        log.info("Request received to update the producer by '{}'", request);
+        var producer = Producer.getProducers()
+                .stream()
+                .filter(p -> p.getId().equals(request.getId()))
+                .findFirst()
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Producer not found to be updated"));
+        var producerUpdated = MAPPER.toProducer(request, producer.getCreatedAt());
+        Producer.getProducers().remove(producer);
+        Producer.getProducers().add(producerUpdated);
+        return ResponseEntity.noContent().build();
+    }
 }
