@@ -3,6 +3,7 @@ package com.felipesouza.controller;
 import com.felipesouza.domain.Anime;
 import com.felipesouza.mapper.AnimeMapper;
 import com.felipesouza.request.AnimePostRequest;
+import com.felipesouza.request.AnimePutRequest;
 import com.felipesouza.response.AnimeGetResponse;
 import com.felipesouza.response.AnimePostResponse;
 import lombok.extern.log4j.Log4j2;
@@ -59,6 +60,21 @@ public class AnimeController {
                 .findFirst()
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Anime not found to be deleted"));
         Anime.getAnimes().remove(anime);
+        return ResponseEntity.noContent().build();
+
+    }
+
+    @PutMapping
+    public ResponseEntity<Void> update(@RequestBody AnimePutRequest request) {
+        log.info("Request received to update the anime '{}'", request);
+        var anime = Anime.getAnimes()
+                .stream()
+                .filter(a -> a.getId().equals(request.getId()))
+                .findFirst()
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Anime not found to be updated"));
+        var animeUpdated = MAPPER.toAnime(request);
+        Anime.getAnimes().remove(anime);
+        Anime.getAnimes().add(animeUpdated);
         return ResponseEntity.noContent().build();
 
     }
