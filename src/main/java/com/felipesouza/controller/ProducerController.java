@@ -21,22 +21,22 @@ import java.util.List;
 @Log4j2
 @RequiredArgsConstructor
 public class ProducerController {
-    private static final ProducerMapper MAPPER = ProducerMapper.INSTANCE;
+    private ProducerMapper mapper;
     private final ProducerService producerService;
 
     @GetMapping
     public ResponseEntity<List<ProducerGetResponse>> list(@RequestParam(required = false) String name) {
         var producers = producerService.findAll(name);
-        var response = MAPPER.toProducerGetResponses(producers);
+        var response = mapper.toProducerGetResponses(producers);
         return ResponseEntity.ok(response);
     }
 
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE,
             headers = "x-api-version=v1")
     public ResponseEntity<ProducerPostResponse> save(@RequestBody ProducerPostRequest request) {
-        var producer = MAPPER.toProducer(request);
+        var producer = mapper.toProducer(request);
         producer = producerService.save(producer);
-        var response = MAPPER.toProducerPostResponse(producer);
+        var response = mapper.toProducerPostResponse(producer);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
@@ -51,7 +51,7 @@ public class ProducerController {
     @PutMapping
     public ResponseEntity<Void> update(@RequestBody ProducerPutRequest request) {
         log.info("Request received to update the producer by '{}'", request);
-        var producerToUpdate = MAPPER.toProducer(request);
+        var producerToUpdate = mapper.toProducer(request);
         producerService.update(producerToUpdate);
         return ResponseEntity.noContent().build();
     }
