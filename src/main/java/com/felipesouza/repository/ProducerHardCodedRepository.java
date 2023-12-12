@@ -17,11 +17,8 @@ public class ProducerHardCodedRepository {
 
     private final ProducerData producerData;
 
-
     @Qualifier(value = "mongoDB")
     private final Connection connection;
-
-
 
     public List<Producer> findAll() {
         return producerData.getProducers();
@@ -56,5 +53,4 @@ public class ProducerHardCodedRepository {
         delete(producer);
         save(producer);
     }
-
 }
