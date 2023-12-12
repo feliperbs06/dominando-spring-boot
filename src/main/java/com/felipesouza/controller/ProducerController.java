@@ -21,7 +21,7 @@ import java.util.List;
 @Log4j2
 @RequiredArgsConstructor
 public class ProducerController {
-    private ProducerMapper mapper;
+    private final ProducerMapper mapper;
     private final ProducerService producerService;
 
     @GetMapping
