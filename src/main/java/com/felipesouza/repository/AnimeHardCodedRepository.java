@@ -1,51 +1,46 @@
 package com.felipesouza.repository;
 
 import com.felipesouza.domain.Anime;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Repository;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-
 @Repository
+@RequiredArgsConstructor
+@Log4j2
 public class AnimeHardCodedRepository {
+    private final AnimeData animeData;
 
-    private static final List<Anime> ANIMES = new ArrayList<>();
-
-    static {
-        var jigokuraku = Anime.builder().id(1L).name("Jigokuraku").build();
-        var konosuba = Anime.builder().id(2L).name("Konosuba").build();
-        var drStone = Anime.builder().id(3L).name("Dr.Stone").build();
-        ANIMES.addAll(List.of(jigokuraku, konosuba, drStone));
-    }
     public List<Anime> findAll() {
-        return ANIMES;
+        return animeData.getAnimes();
     }
 
 
     public Optional<Anime> findById(Long id) {
-        return ANIMES
+        return animeData.getAnimes()
                 .stream()
                 .filter(anime -> anime.getId().equals(id))
                 .findFirst();
     }
 
     public List<Anime> findByName(String name) {
-        return name == null ? ANIMES :
-                ANIMES
+        return name == null ? animeData.getAnimes() :
+                animeData.getAnimes()
                         .stream()
                         .filter(producer -> producer.getName().equalsIgnoreCase(name))
                         .toList();
     }
 
     public Anime save(Anime anime) {
-        ANIMES.add(anime);
+        animeData.getAnimes().add(anime);
         return anime;
     }
 
     public void delete(Anime anime) {
-        ANIMES.remove(anime);
+        animeData.getAnimes().remove(anime);
     }
 
     public void update(Anime anime) {

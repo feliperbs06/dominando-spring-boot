@@ -29,8 +29,8 @@ public class AnimeService {
     }
 
     public void delete(Long id) {
-        var producer = findById(id);
-        repository.delete(producer);
+        var anime = findById(id);
+        repository.delete(anime);
     }
 
     public void update(Anime animeToUpdate) {
